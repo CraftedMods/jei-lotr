@@ -1,0 +1,38 @@
+modLoader="javafml" 
+loaderVersion="[27,)"
+issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues" 
+[[mods]] 
+modId="jeilotr" 
+version="1.0.0-ALPHA" 
+displayName="JEI LOTR" 
+updateJSONURL="http://github.com/CraftedMods/jei-lotr" 
+displayURL="https://github.com/CraftedMods/jei-lotr/blob/master/versions.json" 
+credits="Malvegil, Mevans (LOTR Mod), mezz (JEI), the FML and Forge team, Mojang" 
+authors="Malvegil a.k.a. CraftedMods, Crafted_Mods or The Ranger Malvegil" 
+
+description='''
+A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
+'''
+[[dependencies.jeilotr]] 
+    # the modid of the dependency
+    modId="forge" 
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true 
+    # The version range of the dependency
+    versionRange="[31,)" 
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"
+[[dependencies.jeilotr]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.jeilotr]]
+    modId="lotr"
+    mandatory=true
+    versionRange="[Renewed-1.0]"
+    ordering="NONE"
+    side="BOTH"
