@@ -20,13 +20,14 @@ package craftedMods.jeiLotr;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import lotr.common.init.LOTRBlocks;
+import lotr.common.init.*;
 import lotr.common.recipe.LOTRRecipes;
 import mezz.jei.api.*;
 import mezz.jei.api.registration.*;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
@@ -58,7 +59,7 @@ public class JEIPlugin implements IModPlugin
             catch (NoSuchMethodException e)
             {
                 // Trying the obfuscated version
-                getRecipesMethod = RecipeManager.class.getDeclaredMethod ("func_215370_b", IRecipeType.class);
+                getRecipesMethod = RecipeManager.class.getDeclaredMethod ("func_215366_a", IRecipeType.class);
             }
             getRecipesMethod.setAccessible (true);
         }
@@ -115,7 +116,7 @@ public class JEIPlugin implements IModPlugin
     public void registerRecipeCatalysts (IRecipeCatalystRegistration registration)
     {
         initCraftingTables ();
-        craftingTables.forEach (table -> registration.addRecipeCatalyst (table.ctBlock, table.uid));
+        craftingTables.forEach (table -> registration.addRecipeCatalyst (new ItemStack (table.ctBlock), table.uid));
     }
 
     @Override

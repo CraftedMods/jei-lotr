@@ -3,10 +3,10 @@ loaderVersion="[27,)"
 issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues" 
 [[mods]] 
 modId="jeilotr" 
-version="1.0.0-ALPHA" 
+version="1.0.0-BETA" 
 displayName="JEI LOTR" 
-updateJSONURL="http://github.com/CraftedMods/jei-lotr" 
-displayURL="https://github.com/CraftedMods/jei-lotr/blob/master/versions.json" 
+updateJSONURL="https://raw.githubusercontent.com/CraftedMods/jei-lotr/master/versions.json" 
+displayURL="http://github.com/CraftedMods/jei-lotr" 
 credits="Malvegil, Mevans (LOTR Mod), mezz (JEI), the FML and Forge team, Mojang" 
 authors="Malvegil a.k.a. CraftedMods, Crafted_Mods or The Ranger Malvegil" 
 
@@ -33,6 +33,6 @@ A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
 [[dependencies.jeilotr]]
     modId="lotr"
     mandatory=true
-    versionRange="[Renewed-1.0]"
+    versionRange="[Renewed-1.1,)"
     ordering="NONE"
     side="BOTH"

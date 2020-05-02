@@ -22,7 +22,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: "net.minecrell.licenser"
 
-version = '1.0.0-ALPHA'
+version = '1.0.0-BETA'
 group = 'craftedMods.jeiLotr' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'jeilotr'
 
@@ -113,20 +113,20 @@ dependencies {
 
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
     
-    compileOnly fg.deobf(project.dependencies.create("foobar:lotr:1.0"))
-    runtimeOnly fg.deobf(project.dependencies.create("foobar:lotr:1.0"))
+    compileOnly fg.deobf(project.dependencies.create("foobar:lotr:${lotr_version}"))
+    runtimeOnly fg.deobf(project.dependencies.create("foobar:lotr:${lotr_version}"))
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
+            "Specification-Title": "jei-lotr",
+            "Specification-Vendor": "CraftedMods",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Vendor" :"CraftedMods",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

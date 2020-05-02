@@ -19,10 +19,17 @@ package craftedMods.jeiLotr;
 
 import org.apache.logging.log4j.*;
 
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod("jeilotr")
 public class JEILotr
@@ -31,13 +38,37 @@ public class JEILotr
 
     public JEILotr ()
     {
-        FMLJavaModLoadingContext.get ().getModEventBus ().addListener (this::setup);
+        if (FMLEnvironment.dist == Dist.CLIENT)
+        {
+            FMLJavaModLoadingContext.get ().getModEventBus ().addListener (this::setup);
 
-        MinecraftForge.EVENT_BUS.register (this);
+            MinecraftForge.EVENT_BUS.register (this);
+        }
+        else
+        {
+            LOGGER.warn ("JEI LOTR was loaded on a server - it doesn't do anyting there and may cause crashes");
+        }
     }
 
     private void setup (final FMLCommonSetupEvent event)
     {
 
+    }
+
+    @SubscribeEvent
+    public void login (EntityJoinWorldEvent event)
+    {
+        if (event.getEntity () instanceof ClientPlayerEntity)
+        {
+            VersionChecker.CheckResult result = VersionChecker
+                .getResult (ModList.get ().getModContainerById ("jeilotr").get ().getModInfo ());
+            if (result != null && (result.status == VersionChecker.Status.OUTDATED
+                || result.status == VersionChecker.Status.BETA_OUTDATED))
+            {
+                ((ClientPlayerEntity) event.getEntity ())
+                    .sendMessage (new StringTextComponent (
+                        "\u00A73[JEI LOTR]:\u00A7r A new version (" + result.target.toString () + ") was found"));
+            }
+        }
     }
 }

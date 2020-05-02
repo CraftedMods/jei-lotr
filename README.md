@@ -2,8 +2,8 @@
 The plugin adds JEI support for all devices and recipes added by the LOTR Mod.
 ## Dependencies
 JEI LOTR has the following dependencies:
-- [The Lord of the Rings Mod Renewed v1.0](https://www.mediafire.com/file/1l66jymkymad28z/)
-- [JEI 1.15.2-6.0.0.3](https://www.curseforge.com/minecraft/mc-mods/jei/files/all)
+- [The Lord of the Rings Mod Renewed v1.1](https://www.mediafire.com/file/0u9r3psso7lb0w6/)
+- [JEI 1.15.2-6.0.0.4](https://www.curseforge.com/minecraft/mc-mods/jei/files/all)
 
 The plugin was created with the MinecraftForge version "1.15.2-31.1.27".  
 ## Announcements and Documentation
