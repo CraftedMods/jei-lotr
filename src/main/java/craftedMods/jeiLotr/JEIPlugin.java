@@ -17,35 +17,21 @@
 
 package craftedMods.jeiLotr;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 
-import lotr.common.init.*;
-import lotr.common.recipe.LOTRRecipes;
+import lotr.common.recipe.*;
 import mezz.jei.api.*;
 import mezz.jei.api.registration.*;
-import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.RegistryObject;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin
 {
-    public static final ResourceLocation DWARVEN_CT_UID = new ResourceLocation ("lotr", "dwarven_ct");
-    public static final ResourceLocation GONDOR_CT_UID = new ResourceLocation ("lotr", "gondor_ct");
-    public static final ResourceLocation GALADHRIM_CT_UID = new ResourceLocation ("lotr", "galadhrim_ct");
-    public static final ResourceLocation HARAD_CT_UID = new ResourceLocation ("lotr", "harad_ct");
-    public static final ResourceLocation LINDON_CT_UID = new ResourceLocation ("lotr", "lindon_ct");
-    public static final ResourceLocation MORDOR_CT_UID = new ResourceLocation ("lotr", "mordor_ct");
-    public static final ResourceLocation RIVENDELL_CT_UID = new ResourceLocation ("lotr", "rivendell_ct");
-    public static final ResourceLocation ROHAN_CT_UID = new ResourceLocation ("lotr", "rohan_ct");
-    public static final ResourceLocation UMBAR_CT_UID = new ResourceLocation ("lotr", "umbar_ct");
-    public static final ResourceLocation WOOD_ELVEN_CT_UID = new ResourceLocation ("lotr", "wood_elven_ct");
-
     private static Method getRecipesMethod;
 
     static
@@ -84,39 +70,39 @@ public class JEIPlugin implements IModPlugin
         {
             craftingTables = new HashSet<> ();
 
-            craftingTables.add (new LOTRCraftingTable (DWARVEN_CT_UID,
-                getCTBlock (LOTRBlocks.DWARVEN_CRAFTING_TABLE), LOTRRecipes.DWARVEN_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (GONDOR_CT_UID,
-                getCTBlock (LOTRBlocks.GONDOR_CRAFTING_TABLE), LOTRRecipes.GONDOR_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (GALADHRIM_CT_UID,
-                getCTBlock (LOTRBlocks.GALADHRIM_CRAFTING_TABLE), LOTRRecipes.GALADHRIM_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (HARAD_CT_UID,
-                getCTBlock (LOTRBlocks.HARAD_CRAFTING_TABLE), LOTRRecipes.HARAD_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (LINDON_CT_UID,
-                getCTBlock (LOTRBlocks.LINDON_CRAFTING_TABLE), LOTRRecipes.LINDON_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (MORDOR_CT_UID,
-                getCTBlock (LOTRBlocks.MORDOR_CRAFTING_TABLE), LOTRRecipes.MORDOR_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (RIVENDELL_CT_UID,
-                getCTBlock (LOTRBlocks.RIVENDELL_CRAFTING_TABLE), LOTRRecipes.RIVENDELL_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (ROHAN_CT_UID,
-                getCTBlock (LOTRBlocks.ROHAN_CRAFTING_TABLE), LOTRRecipes.ROHAN_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (UMBAR_CT_UID,
-                getCTBlock (LOTRBlocks.UMBAR_CRAFTING_TABLE), LOTRRecipes.UMBAR_CRAFTING));
-            craftingTables.add (new LOTRCraftingTable (WOOD_ELVEN_CT_UID,
-                getCTBlock (LOTRBlocks.WOOD_ELVEN_CRAFTING_TABLE), LOTRRecipes.WOOD_ELVEN_CRAFTING));
-        }
-    }
+            try
+            {
+                for (Field field : LOTRRecipes.class.getDeclaredFields ())
+                {
+                    if (field.getType () == FactionTableType.class && field.getName ().contains ("CRAFTING"))
+                    {
+                        FactionTableType type = (FactionTableType) field.get (null);
 
-    private Block getCTBlock (RegistryObject<Block> ctBlockRegistryObject)
-    {
-        return ctBlockRegistryObject.orElseGet ( () -> Blocks.CRAFTING_TABLE);
+                        Collection<IRecipeType<?>> types = new ArrayList<> ();
+                        types.add (type);
+                        types.addAll (type.getMultiTableTypes ());
+
+                        craftingTables
+                            .add (new LOTRCraftingTable (new ResourceLocation ("lotr", type.recipeID.split (":")[1]),
+                                type.getIcon (), types));
+                    }
+                }
+                JEILotr.LOGGER.debug ("Found " + craftingTables.size () + " faction crafting tables");
+            }
+            catch (Exception e)
+            {
+                JEILotr.LOGGER
+                    .error ("Couldn't instantiate the faction crafting tables from the LOTRRecipes type fields", e);
+            }
+
+        }
     }
 
     @Override
     public void registerRecipeCatalysts (IRecipeCatalystRegistration registration)
     {
         initCraftingTables ();
-        craftingTables.forEach (table -> registration.addRecipeCatalyst (new ItemStack (table.ctBlock), table.uid));
+        craftingTables.forEach (table -> registration.addRecipeCatalyst (table.ctIcon.copy (), table.uid));
     }
 
     @Override
@@ -127,7 +113,7 @@ public class JEIPlugin implements IModPlugin
         {
             registration
                 .addRecipeCategories (
-                    new FactionCraftingTable (table.uid, table.ctBlock, registration.getJeiHelpers ().getGuiHelper (),
+                    new FactionCraftingTable (table.uid, table.ctIcon, registration.getJeiHelpers ().getGuiHelper (),
                         registration.getJeiHelpers ().getModIdHelper ()));
         });
     }
@@ -136,27 +122,31 @@ public class JEIPlugin implements IModPlugin
     public void registerRecipes (IRecipeRegistration registration)
     {
         initCraftingTables ();
-        craftingTables.forEach (table -> registration.addRecipes (getRecipesOfType (table.recipeType), table.uid));
+        craftingTables.forEach (table -> registration.addRecipes (getRecipesOfTypes (table.recipeTypes), table.uid));
 
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<IRecipe<?>> getRecipesOfType (IRecipeType<?> type)
+    private Collection<IRecipe<?>> getRecipesOfTypes (Collection<IRecipeType<?>> types)
     {
+        Collection<IRecipe<?>> recipes = new ArrayList<> ();
         if (getRecipesMethod != null)
         {
             try
             {
-                return ((Map<ResourceLocation, IRecipe<?>>) getRecipesMethod.invoke (
-                    Minecraft.getInstance ().world.getRecipeManager (),
-                    type)).values ();
+                for (IRecipeType<?> type : types)
+                {
+                    recipes.addAll ( ((Map<ResourceLocation, IRecipe<?>>) getRecipesMethod.invoke (
+                        Minecraft.getInstance ().world.getRecipeManager (),
+                        type)).values ());
+                }
             }
             catch (Exception e)
             {
                 JEILotr.LOGGER.error ("Couldn't get the recipes of the specified type", e);
             }
         }
-        return Arrays.asList ();
+        return recipes;
     }
 
     @Override
@@ -175,16 +165,16 @@ public class JEIPlugin implements IModPlugin
     private class LOTRCraftingTable
     {
         private ResourceLocation uid;
-        private Block ctBlock;
-        private IRecipeType<?> recipeType;
+        private ItemStack ctIcon;
+        private Collection<IRecipeType<?>> recipeTypes;
         private Class<?> guiClass;
         private Vector4f guiHandlerArea;
 
-        public LOTRCraftingTable (ResourceLocation uid, Block ctBlock, IRecipeType<?> recipeType)
+        public LOTRCraftingTable (ResourceLocation uid, ItemStack ctIcon, Collection<IRecipeType<?>> recipeTypes)
         {
             this.uid = uid;
-            this.ctBlock = ctBlock;
-            this.recipeType = recipeType;
+            this.ctIcon = ctIcon;
+            this.recipeTypes = recipeTypes;
         }
 
         @Override
@@ -193,10 +183,10 @@ public class JEIPlugin implements IModPlugin
             final int prime = 31;
             int result = 1;
             result = prime * result + getOuterType ().hashCode ();
-            result = prime * result + (ctBlock == null ? 0 : ctBlock.hashCode ());
+            result = prime * result + (ctIcon == null ? 0 : ctIcon.hashCode ());
             result = prime * result + (guiClass == null ? 0 : guiClass.hashCode ());
             result = prime * result + (guiHandlerArea == null ? 0 : guiHandlerArea.hashCode ());
-            result = prime * result + (recipeType == null ? 0 : recipeType.hashCode ());
+            result = prime * result + (recipeTypes == null ? 0 : recipeTypes.hashCode ());
             result = prime * result + (uid == null ? 0 : uid.hashCode ());
             return result;
         }
@@ -213,12 +203,12 @@ public class JEIPlugin implements IModPlugin
             LOTRCraftingTable other = (LOTRCraftingTable) obj;
             if (!getOuterType ().equals (other.getOuterType ()))
                 return false;
-            if (ctBlock == null)
+            if (ctIcon == null)
             {
-                if (other.ctBlock != null)
+                if (other.ctIcon != null)
                     return false;
             }
-            else if (!ctBlock.equals (other.ctBlock))
+            else if (!ctIcon.equals (other.ctIcon))
                 return false;
             if (guiClass == null)
             {
@@ -234,12 +224,12 @@ public class JEIPlugin implements IModPlugin
             }
             else if (!guiHandlerArea.equals (other.guiHandlerArea))
                 return false;
-            if (recipeType == null)
+            if (recipeTypes == null)
             {
-                if (other.recipeType != null)
+                if (other.recipeTypes != null)
                     return false;
             }
-            else if (!recipeType.equals (other.recipeType))
+            else if (!recipeTypes.equals (other.recipeTypes))
                 return false;
             if (uid == null)
             {

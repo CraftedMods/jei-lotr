@@ -21,7 +21,6 @@ import lotr.common.recipe.*;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.*;
 import mezz.jei.plugins.vanilla.crafting.*;
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
@@ -31,17 +30,17 @@ public class FactionCraftingTable extends CraftingRecipeCategory
 {
 
     private final ResourceLocation uid;
-    private final Block ctBlock;
+    private final ItemStack ctIcon;
     private final IDrawable icon;
 
-    public FactionCraftingTable (ResourceLocation uid, Block ctBlock, IGuiHelper guiHelper,
+    public FactionCraftingTable (ResourceLocation uid, ItemStack ctIcon, IGuiHelper guiHelper,
         IModIdHelper modIdHelper)
     {
         super (guiHelper, modIdHelper);
 
         this.uid = uid;
-        this.ctBlock = ctBlock;
-        icon = guiHelper.createDrawableIngredient (new ItemStack (ctBlock));
+        this.ctIcon = ctIcon;
+        icon = guiHelper.createDrawableIngredient (ctIcon);
 
         this.addCategoryExtension (LOTRShapedRecipe.class, CraftingCategoryExtension::new);
         this.addCategoryExtension (LOTRShapelessRecipe.class, CraftingCategoryExtension::new);
@@ -62,7 +61,7 @@ public class FactionCraftingTable extends CraftingRecipeCategory
     @Override
     public String getTitle ()
     {
-        return I18n.format (ctBlock.getTranslationKey ());
+        return I18n.format (ctIcon.getTranslationKey ());
     }
 
     @Override
