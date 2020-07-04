@@ -20,8 +20,12 @@ package craftedMods.jeiLotr;
 import java.lang.reflect.*;
 import java.util.*;
 
+import lotr.common.init.LOTRBlocks;
 import lotr.common.recipe.*;
 import mezz.jei.api.*;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.helpers.*;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Vector4f;
@@ -56,7 +60,7 @@ public class JEIPlugin implements IModPlugin
         }
     }
 
-    private Collection<LOTRCraftingTable> craftingTables;
+    private Collection<LOTRDevice> devices;
 
     @Override
     public ResourceLocation getPluginUid ()
@@ -64,11 +68,11 @@ public class JEIPlugin implements IModPlugin
         return new ResourceLocation ("crafted_mods", "jei_lotr");
     }
 
-    public void initCraftingTables ()
+    public void initDevices ()
     {
-        if (craftingTables == null)
+        if (devices == null)
         {
-            craftingTables = new HashSet<> ();
+            devices = new HashSet<> ();
 
             try
             {
@@ -82,12 +86,12 @@ public class JEIPlugin implements IModPlugin
                         types.add (type);
                         types.addAll (type.getMultiTableTypes ());
 
-                        craftingTables
+                        devices
                             .add (new LOTRCraftingTable (new ResourceLocation ("lotr", type.recipeID.split (":")[1]),
                                 type.getIcon (), types));
                     }
                 }
-                JEILotr.LOGGER.debug ("Found " + craftingTables.size () + " faction crafting tables");
+                JEILotr.LOGGER.debug ("Found " + devices.size () + " faction crafting tables");
             }
             catch (Exception e)
             {
@@ -95,35 +99,51 @@ public class JEIPlugin implements IModPlugin
                     .error ("Couldn't instantiate the faction crafting tables from the LOTRRecipes type fields", e);
             }
 
+            devices.add (new LOTRAlloyForge (new ResourceLocation ("lotr", "dwarven_forge"),
+                new ItemStack (LOTRBlocks.DWARVEN_FORGE.get ()),
+                Arrays.asList (LOTRRecipes.DWARVEN_FORGE, LOTRRecipes.ALLOY_FORGE, LOTRRecipes.DWARVEN_FORGE_ALLOY)));
+            devices.add (new LOTRAlloyForge (new ResourceLocation ("lotr", "orc_forge"),
+                new ItemStack (LOTRBlocks.ORC_FORGE.get ()),
+                Arrays.asList (LOTRRecipes.ORC_FORGE, LOTRRecipes.ALLOY_FORGE, LOTRRecipes.ORC_FORGE_ALLOY)));
+            devices.add (new LOTRAlloyForge (new ResourceLocation ("lotr", "elven_forge"),
+                new ItemStack (LOTRBlocks.ELVEN_FORGE.get ()),
+                Arrays.asList (LOTRRecipes.ELVEN_FORGE, LOTRRecipes.ALLOY_FORGE, LOTRRecipes.ELVEN_FORGE_ALLOY)));
+            devices.add (new LOTRAlloyForge (new ResourceLocation ("lotr", "alloy_forge"),
+                new ItemStack (LOTRBlocks.ALLOY_FORGE.get ()),
+                Arrays.asList (LOTRRecipes.ALLOY_FORGE)));
+
         }
     }
 
     @Override
     public void registerRecipeCatalysts (IRecipeCatalystRegistration registration)
     {
-        initCraftingTables ();
-        craftingTables.forEach (table -> registration.addRecipeCatalyst (table.ctIcon.copy (), table.uid));
+        initDevices ();
+        devices.forEach (device -> registration.addRecipeCatalyst (device.icon.copy (), device.uid));
+
+        registration.addRecipeCatalyst (new ItemStack (LOTRBlocks.DWARVEN_FORGE.get ()), VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst (new ItemStack (LOTRBlocks.ORC_FORGE.get ()), VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst (new ItemStack (LOTRBlocks.ELVEN_FORGE.get ()), VanillaRecipeCategoryUid.FUEL);
+        registration.addRecipeCatalyst (new ItemStack (LOTRBlocks.ALLOY_FORGE.get ()), VanillaRecipeCategoryUid.FUEL);
     }
 
     @Override
     public void registerCategories (IRecipeCategoryRegistration registration)
     {
-        initCraftingTables ();
-        craftingTables.forEach (table ->
+        initDevices ();
+        devices.forEach (device ->
         {
             registration
-                .addRecipeCategories (
-                    new FactionCraftingTable (table.uid, table.ctIcon, registration.getJeiHelpers ().getGuiHelper (),
-                        registration.getJeiHelpers ().getModIdHelper ()));
+                .addRecipeCategories (device.createCategoryInstance (registration.getJeiHelpers ().getGuiHelper (),
+                    registration.getJeiHelpers ().getModIdHelper ()));
         });
     }
 
     @Override
     public void registerRecipes (IRecipeRegistration registration)
     {
-        initCraftingTables ();
-        craftingTables.forEach (table -> registration.addRecipes (getRecipesOfTypes (table.recipeTypes), table.uid));
-
+        initDevices ();
+        devices.forEach (device -> registration.addRecipes (getRecipesOfTypes (device.recipeTypes), device.uid));
     }
 
     @SuppressWarnings("unchecked")
@@ -134,10 +154,12 @@ public class JEIPlugin implements IModPlugin
         {
             try
             {
+                Minecraft minecraft = Minecraft.getInstance ();
+
                 for (IRecipeType<?> type : types)
                 {
                     recipes.addAll ( ((Map<ResourceLocation, IRecipe<?>>) getRecipesMethod.invoke (
-                        Minecraft.getInstance ().world.getRecipeManager (),
+                        minecraft.world.getRecipeManager (),
                         type)).values ());
                 }
             }
@@ -152,30 +174,63 @@ public class JEIPlugin implements IModPlugin
     @Override
     public void registerGuiHandlers (IGuiHandlerRegistration registration)
     {
-        initCraftingTables (); // TODO implement
+        initDevices (); // TODO implement
     }
 
     @Override
     public void registerRecipeTransferHandlers (IRecipeTransferRegistration registration)
     {
-        initCraftingTables (); // TODO implement
+        initDevices (); // TODO implement
+    }
+
+    private class LOTRAlloyForge extends LOTRDevice
+    {
+
+        public LOTRAlloyForge (ResourceLocation uid, ItemStack icon, Collection<IRecipeType<?>> recipeTypes)
+        {
+            super (uid, icon, recipeTypes);
+        }
+
+        @Override
+        public IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper)
+        {
+            return new AlloyForge (this.uid, this.icon, guiHelper);
+        }
 
     }
 
-    private class LOTRCraftingTable
+    private class LOTRCraftingTable extends LOTRDevice
     {
-        private ResourceLocation uid;
-        private ItemStack ctIcon;
-        private Collection<IRecipeType<?>> recipeTypes;
-        private Class<?> guiClass;
-        private Vector4f guiHandlerArea;
 
-        public LOTRCraftingTable (ResourceLocation uid, ItemStack ctIcon, Collection<IRecipeType<?>> recipeTypes)
+        public LOTRCraftingTable (ResourceLocation uid, ItemStack icon, Collection<IRecipeType<?>> recipeTypes)
+        {
+            super (uid, icon, recipeTypes);
+        }
+
+        @Override
+        public IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper)
+        {
+            return new FactionCraftingTable (this.uid, this.icon, guiHelper, modIdHelper);
+        }
+
+    }
+
+    private abstract class LOTRDevice
+    {
+        protected ResourceLocation uid;
+        protected ItemStack icon;
+        protected Collection<IRecipeType<?>> recipeTypes;
+        protected Class<?> guiClass;
+        protected Vector4f guiHandlerArea;
+
+        public LOTRDevice (ResourceLocation uid, ItemStack icon, Collection<IRecipeType<?>> recipeTypes)
         {
             this.uid = uid;
-            this.ctIcon = ctIcon;
+            this.icon = icon;
             this.recipeTypes = recipeTypes;
         }
+
+        public abstract IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper);
 
         @Override
         public int hashCode ()
@@ -183,7 +238,7 @@ public class JEIPlugin implements IModPlugin
             final int prime = 31;
             int result = 1;
             result = prime * result + getOuterType ().hashCode ();
-            result = prime * result + (ctIcon == null ? 0 : ctIcon.hashCode ());
+            result = prime * result + (icon == null ? 0 : icon.hashCode ());
             result = prime * result + (guiClass == null ? 0 : guiClass.hashCode ());
             result = prime * result + (guiHandlerArea == null ? 0 : guiHandlerArea.hashCode ());
             result = prime * result + (recipeTypes == null ? 0 : recipeTypes.hashCode ());
@@ -200,15 +255,15 @@ public class JEIPlugin implements IModPlugin
                 return false;
             if (getClass () != obj.getClass ())
                 return false;
-            LOTRCraftingTable other = (LOTRCraftingTable) obj;
+            LOTRDevice other = (LOTRDevice) obj;
             if (!getOuterType ().equals (other.getOuterType ()))
                 return false;
-            if (ctIcon == null)
+            if (icon == null)
             {
-                if (other.ctIcon != null)
+                if (other.icon != null)
                     return false;
             }
-            else if (!ctIcon.equals (other.ctIcon))
+            else if (!icon.equals (other.icon))
                 return false;
             if (guiClass == null)
             {
