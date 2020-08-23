@@ -1,5 +1,15 @@
 # Changelog of JEI LOTR
 
+## 1.3.0-BETA
+### New features:
+* Updated to LOTR Renewed-1.7.1 (added keg support)
+* Added missing hobbit oven support
+* Added support for recipe transfer handlers
+* Added support for recipe click handlers (taking into account that faction crafting tables can now be used for vanilla recipes too)
+
+### Fixes:
+* Fixed that some alloy forges didn't show all supported recipes
+
 ## 1.2.0-BETA
 * Updated to LOTR Renewed-1.3 (added support for alloy forges)
 
