@@ -50,9 +50,9 @@ public class AlloyForge extends FurnaceVariantCategory<IRecipe<?>>
         super (guiHelper);
         this.uid = uid;
         this.forgeIcon = forgeIcon;
-        this.icon = guiHelper.createDrawableIngredient (forgeIcon);
-        this.background = guiHelper.createDrawable (ALLOY_FORGE_GUI_LOCATION, 45, 20, 85, 130);
-        this.arrow = guiHelper
+        icon = guiHelper.createDrawableIngredient (forgeIcon);
+        background = guiHelper.createDrawable (ALLOY_FORGE_GUI_LOCATION, 45, 20, 85, 130);
+        arrow = guiHelper
             .drawableBuilder (ALLOY_FORGE_GUI_LOCATION, 176, 14, 16, 30)
             .buildAnimated (200, IDrawableAnimated.StartDirection.TOP, false);
     }
@@ -72,13 +72,13 @@ public class AlloyForge extends FurnaceVariantCategory<IRecipe<?>>
     @Override
     public IDrawable getIcon ()
     {
-        return this.icon;
+        return icon;
     }
 
     @Override
     public IDrawable getBackground ()
     {
-        return this.background;
+        return background;
     }
 
     @Override
@@ -123,10 +123,11 @@ public class AlloyForge extends FurnaceVariantCategory<IRecipe<?>>
         }
     }
 
+    @Override
     public void draw (IRecipe<?> recipe, double mouseX, double mouseY)
     {
-        this.animatedFlame.draw (35, 92);
-        this.arrow.draw (35, 38);
+        animatedFlame.draw (35, 92);
+        arrow.draw (35, 38);
 
         float experience = 0f;
 
@@ -142,13 +143,13 @@ public class AlloyForge extends FurnaceVariantCategory<IRecipe<?>>
         if (experience > 0.0f)
         {
             String experienceString = Translator.translateToLocalFormatted (
-                (String) "gui.jei.category.smelting.experience",
-                (Object[]) new Object[]
+                "gui.jei.category.smelting.experience",
+                new Object[]
                 {Float.valueOf (experience)});
             Minecraft minecraft = Minecraft.getInstance ();
             FontRenderer fontRenderer = minecraft.fontRenderer;
             int stringWidth = fontRenderer.getStringWidth (experienceString);
-            fontRenderer.drawString (experienceString, (float) (this.background.getWidth () - stringWidth), 43.0f,
+            fontRenderer.drawString (experienceString, background.getWidth () - stringWidth, 43.0f,
                 -8355712);
         }
     }

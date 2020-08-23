@@ -50,8 +50,8 @@ public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
     {
         this.uid = uid;
         this.forgeIcon = forgeIcon;
-        this.icon = guiHelper.createDrawableIngredient (forgeIcon);
-        this.background = guiHelper.createDrawable (Constants.RECIPE_GUI_VANILLA, 0, 60, 116, 54);
+        icon = guiHelper.createDrawableIngredient (forgeIcon);
+        background = guiHelper.createDrawable (Constants.RECIPE_GUI_VANILLA, 0, 60, 116, 54);
     }
 
     @Override
@@ -69,13 +69,13 @@ public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
     @Override
     public IDrawable getIcon ()
     {
-        return this.icon;
+        return icon;
     }
 
     @Override
     public IDrawable getBackground ()
     {
-        return this.background;
+        return background;
     }
 
     @Override
@@ -129,6 +129,7 @@ public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
         guiItemStacks.set (9, resultItems);
     }
 
+    @Override
     public void draw (DrinkBrewingRecipe recipe, double mouseX, double mouseY)
     {
         Minecraft minecraft = Minecraft.getInstance ();
@@ -139,12 +140,12 @@ public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
         if (experience > 0.0f)
         {
             String experienceString = Translator.translateToLocalFormatted (
-                (String) "gui.jei.category.smelting.experience",
-                (Object[]) new Object[]
+                "gui.jei.category.smelting.experience",
+                new Object[]
                 {Float.valueOf (experience)});
 
             int stringWidth = fontRenderer.getStringWidth (experienceString);
-            fontRenderer.drawString (experienceString, (float) (this.background.getWidth () - stringWidth), 0.0f,
+            fontRenderer.drawString (experienceString, background.getWidth () - stringWidth, 0.0f,
                 -8355712);
         }
 
@@ -152,7 +153,7 @@ public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
 
         int stringWidth = fontRenderer.getStringWidth (brewingTimeString);
         fontRenderer.drawString (brewingTimeString,
-            (float) (this.background.getWidth () - stringWidth), 45.0f,
+            background.getWidth () - stringWidth, 45.0f,
             -8355712);
 
     }

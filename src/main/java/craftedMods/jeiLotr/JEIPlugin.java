@@ -251,6 +251,7 @@ public class JEIPlugin implements IModPlugin
         registration.addGuiContainerHandler (LOTRGuiCrafting.class, new IGuiContainerHandler<LOTRGuiCrafting> ()
         {
 
+            @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas (LOTRGuiCrafting containerScreen, double mouseX,
                 double mouseY)
             {
@@ -269,6 +270,7 @@ public class JEIPlugin implements IModPlugin
             registration.addGuiContainerHandler (AlloyForgeScreen.class, new IGuiContainerHandler<AlloyForgeScreen> ()
             {
 
+                @Override
                 public Collection<IGuiClickableArea> getGuiClickableAreas (AlloyForgeScreen containerScreen,
                     double mouseX,
                     double mouseY)
@@ -315,7 +317,7 @@ public class JEIPlugin implements IModPlugin
         @Override
         public IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper)
         {
-            return new Keg (this.uid, this.icon, guiHelper);
+            return new Keg (uid, icon, guiHelper);
         }
 
         @Override
@@ -324,7 +326,7 @@ public class JEIPlugin implements IModPlugin
             super.registerTransferHandlers (registration);
 
             registration.addRecipeTransferHandler (KegContainer.class,
-                this.uid, 0, 9, 10, 36);
+                uid, 0, 9, 10, 36);
         }
 
     }
@@ -346,7 +348,7 @@ public class JEIPlugin implements IModPlugin
         @Override
         public IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper)
         {
-            return new AlloyForge (this.uid, this.icon, guiHelper);
+            return new AlloyForge (uid, icon, guiHelper);
         }
 
         @Override
@@ -404,7 +406,7 @@ public class JEIPlugin implements IModPlugin
         {
             super.registerTransferHandlers (registration);
 
-            registration.addRecipeTransferHandler (AlloyForgeContainer.class, this.uid, 0, 8, 13, 36);
+            registration.addRecipeTransferHandler (AlloyForgeContainer.class, uid, 0, 8, 13, 36);
         }
 
     }
@@ -424,7 +426,7 @@ public class JEIPlugin implements IModPlugin
         @Override
         public IRecipeCategory<?> createCategoryInstance (IGuiHelper guiHelper, IModIdHelper modIdHelper)
         {
-            return new FactionCraftingTable (this.uid, this.icon, guiHelper, modIdHelper);
+            return new FactionCraftingTable (uid, icon, guiHelper, modIdHelper);
         }
 
         @SuppressWarnings("resource")
@@ -435,7 +437,7 @@ public class JEIPlugin implements IModPlugin
 
             registration.addRecipeTransferHandler (
                 container.get ().create (0, Minecraft.getInstance ().player.inventory).getClass (),
-                this.uid, 1, 9, 10, 36);
+                uid, 1, 9, 10, 36);
             registration.addRecipeTransferHandler (
                 container.get ().create (0, Minecraft.getInstance ().player.inventory).getClass (),
                 VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
