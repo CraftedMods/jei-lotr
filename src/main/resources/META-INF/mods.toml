@@ -36,3 +36,9 @@ A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
     versionRange="[Renewed-1.7.1,)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.jeilotr]]
+    modId="jei"
+    mandatory=true
+    versionRange="[6.0.3.15,)"
+    ordering="NONE"
+    side="BOTH"
