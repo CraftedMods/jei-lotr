@@ -19,6 +19,7 @@ package craftedMods.jeiLotr;
 
 import org.apache.logging.log4j.*;
 
+import lotr.common.tileentity.AbstractAlloyForgeTileEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,6 +35,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod("jeilotr")
 public class JEILotr
 {
+    private static int ALLOY_FORGE_RECIPE_VERSION = 3;
+
     public static final Logger LOGGER = LogManager.getLogger ();
 
     public JEILotr ()
@@ -52,7 +55,11 @@ public class JEILotr
 
     private void setup (final FMLCommonSetupEvent event)
     {
-
+        if (ALLOY_FORGE_RECIPE_VERSION != AbstractAlloyForgeTileEntity.RECIPE_FUNCTIONALITY_VERSION_FOR_JEI)
+        {
+            LOGGER.warn (
+                "The supported alloy forge recipe version differs from the one in the current LOTR Mod version - the alloy forge recipe handlers could show wrong recipes.");
+        }
     }
 
     @SubscribeEvent
