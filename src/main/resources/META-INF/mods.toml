@@ -3,7 +3,7 @@ loaderVersion="[27,)"
 issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues" 
 [[mods]] 
 modId="jeilotr" 
-version="1.3.0-BETA" 
+version="1.3.1-BETA" 
 displayName="JEI LOTR" 
 updateJSONURL="https://raw.githubusercontent.com/CraftedMods/jei-lotr/master/versions.json" 
 displayURL="http://github.com/CraftedMods/jei-lotr" 
@@ -33,7 +33,7 @@ A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
 [[dependencies.jeilotr]]
     modId="lotr"
     mandatory=true
-    versionRange="[Renewed-1.7.1,)"
+    versionRange="[Renewed-2.2,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.jeilotr]]

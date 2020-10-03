@@ -1,5 +1,9 @@
 # Changelog of JEI LOTR
 
+## 1.3.1-BETA
+* Updated to LOTR Renewed-2.2
+* Fixed that the transfer/click handlers didn't work anymore
+
 ## 1.3.0-BETA
 ### New features:
 * Updated to LOTR Renewed-1.7.1 (added keg support)

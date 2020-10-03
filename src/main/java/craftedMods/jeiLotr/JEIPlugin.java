@@ -113,12 +113,12 @@ public class JEIPlugin implements IModPlugin
                         types.add (type);
                         types.addAll (type.getMultiTableTypes ());
 
-                        RegistryObject<ContainerType<LOTRContainerCraftingTable>> container = null;
+                        RegistryObject<ContainerType<FactionCraftingContainer>> container = null;
 
                         try
                         {
                             Field containerField = LOTRContainers.class.getDeclaredField (field.getName ());
-                            container = (RegistryObject<ContainerType<LOTRContainerCraftingTable>>) containerField
+                            container = (RegistryObject<ContainerType<FactionCraftingContainer>>) containerField
                                 .get (null);
                         }
                         catch (NoSuchFieldException e)
@@ -248,22 +248,24 @@ public class JEIPlugin implements IModPlugin
 
         registration.addRecipeClickArea (KegScreen.class, 71, 48, 28, 23, new ResourceLocation ("lotr", "keg"));
 
-        registration.addGuiContainerHandler (LOTRGuiCrafting.class, new IGuiContainerHandler<LOTRGuiCrafting> ()
-        {
-
-            @Override
-            public Collection<IGuiClickableArea> getGuiClickableAreas (LOTRGuiCrafting containerScreen, double mouseX,
-                double mouseY)
+        registration.addGuiContainerHandler (FactionCraftingScreen.class,
+            new IGuiContainerHandler<FactionCraftingScreen> ()
             {
-                ResourceLocation uid = containerScreen.getContainer ().isStandardCraftingActive ()
-                    ? VanillaRecipeCategoryUid.CRAFTING
-                    : devicesByBlock.get (containerScreen.getContainer ().getCraftingBlock ()).uid;
 
-                IGuiClickableArea clickableArea = IGuiClickableArea.createBasic (88, 32, 28, 23,
-                    uid);
-                return Collections.singleton (clickableArea);
-            }
-        });
+                @Override
+                public Collection<IGuiClickableArea> getGuiClickableAreas (FactionCraftingScreen containerScreen,
+                    double mouseX,
+                    double mouseY)
+                {
+                    ResourceLocation uid = containerScreen.getContainer ().isStandardCraftingActive ()
+                        ? VanillaRecipeCategoryUid.CRAFTING
+                        : devicesByBlock.get (containerScreen.getContainer ().getCraftingBlock ()).uid;
+
+                    IGuiClickableArea clickableArea = IGuiClickableArea.createBasic (88, 32, 28, 23,
+                        uid);
+                    return Collections.singleton (clickableArea);
+                }
+            });
 
         if (theForgeField != null)
         {
@@ -414,10 +416,10 @@ public class JEIPlugin implements IModPlugin
     private class LOTRCraftingTable extends LOTRDevice
     {
 
-        private final RegistryObject<ContainerType<LOTRContainerCraftingTable>> container;
+        private final RegistryObject<ContainerType<FactionCraftingContainer>> container;
 
         public LOTRCraftingTable (ResourceLocation uid, ItemStack icon, Collection<IRecipeType<?>> recipeTypes,
-            RegistryObject<ContainerType<LOTRContainerCraftingTable>> container)
+            RegistryObject<ContainerType<FactionCraftingContainer>> container)
         {
             super (uid, icon, recipeTypes);
             this.container = container;

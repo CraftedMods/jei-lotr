@@ -5,10 +5,11 @@
 		"1.0.0-BETA": "Updated to LOTR Renewed-1.1",
 		"1.1.0-BETA": "Fixed that some faction crafting table recipes were not shown",
 		"1.2.0-BETA": "Updated to LOTR Renewed-1.3",
-		"1.3.0-BETA": "Updated to LOTR Renewed-1.7.1 and fixed some alloy forge related bugs"
+		"1.3.0-BETA": "Updated to LOTR Renewed-1.7.1 and fixed some alloy forge related bugs",
+		"1.3.1-BETA": "Updated to LOTR Renewed-2.2"
 	},
 	"promos": {
-		"1.15.2-latest": "1.3.0-BETA",
-		"1.15.2-recommended": "1.3.0-BETA"
+		"1.15.2-latest": "1.3.1-BETA",
+		"1.15.2-recommended": "1.3.1-BETA"
 	}
 }
