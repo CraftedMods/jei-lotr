@@ -1,9 +1,10 @@
 modLoader="javafml" 
 loaderVersion="[27,)"
-issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues" 
+issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues"
+license="GNU GENERAL PUBLIC LICENSE Version 3" 
 [[mods]] 
 modId="jeilotr" 
-version="1.3.1-BETA" 
+version="2.0.0-BETA" 
 displayName="JEI LOTR" 
 updateJSONURL="https://raw.githubusercontent.com/CraftedMods/jei-lotr/master/versions.json" 
 displayURL="http://github.com/CraftedMods/jei-lotr" 
@@ -27,18 +28,18 @@ A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
 [[dependencies.jeilotr]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.5]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.jeilotr]]
     modId="lotr"
     mandatory=true
-    versionRange="[Renewed-2.2,)"
+    versionRange="[Renewed-3.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.jeilotr]]
     modId="jei"
     mandatory=true
-    versionRange="[6.0.3.15,)"
+    versionRange="[7.6.4.86,)"
     ordering="NONE"
     side="BOTH"

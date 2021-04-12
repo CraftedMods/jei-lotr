@@ -1,5 +1,8 @@
 # Changelog of JEI LOTR
 
+## 2.0.0-BETA
+* Updated to 1.16.5 and LOTR Renewed-3.0
+
 ## 1.3.1-BETA
 * Updated to LOTR Renewed-2.2
 * Fixed that the transfer/click handlers didn't work anymore

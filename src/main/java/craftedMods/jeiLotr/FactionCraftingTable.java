@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2020 CraftedMods (see http://github.com/CraftedMods)
+ * Copyright (C) 2020-2021 CraftedMods (see http://github.com/CraftedMods)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,57 +17,65 @@
 
 package craftedMods.jeiLotr;
 
-import lotr.common.recipe.*;
+import lotr.common.recipe.LOTRShapedRecipe;
+import lotr.common.recipe.LOTRShapelessRecipe;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.helpers.*;
-import mezz.jei.plugins.vanilla.crafting.*;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.helpers.IModIdHelper;
+import mezz.jei.plugins.vanilla.crafting.CraftingCategoryExtension;
+import mezz.jei.plugins.vanilla.crafting.CraftingRecipeCategory;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
-public class FactionCraftingTable extends CraftingRecipeCategory
-{
+public class FactionCraftingTable extends CraftingRecipeCategory {
 
-    private final ResourceLocation uid;
-    private final ItemStack ctIcon;
-    private final IDrawable icon;
+	private final ResourceLocation uid;
+	private final ItemStack ctIcon;
+	private final IDrawable icon;
+	
+	private ITextComponent titleTextComponent;
 
-    public FactionCraftingTable (ResourceLocation uid, ItemStack ctIcon, IGuiHelper guiHelper,
-        IModIdHelper modIdHelper)
-    {
-        super (guiHelper, modIdHelper);
+	public FactionCraftingTable(ResourceLocation uid, ItemStack ctIcon, IGuiHelper guiHelper,
+			IModIdHelper modIdHelper) {
+		super(guiHelper);
 
-        this.uid = uid;
-        this.ctIcon = ctIcon;
-        icon = guiHelper.createDrawableIngredient (ctIcon);
+		this.uid = uid;
+		this.ctIcon = ctIcon;
+		this.icon = guiHelper.createDrawableIngredient(ctIcon);
 
-        this.addCategoryExtension (LOTRShapedRecipe.class, CraftingCategoryExtension::new);
-        this.addCategoryExtension (LOTRShapelessRecipe.class, CraftingCategoryExtension::new);
-    }
+		this.addCategoryExtension(LOTRShapedRecipe.class, CraftingCategoryExtension::new);
+		this.addCategoryExtension(LOTRShapelessRecipe.class, CraftingCategoryExtension::new);
+		
+		this.titleTextComponent = new TranslationTextComponent(I18n.get(ctIcon.getDescriptionId()));
+	}
 
-    @Override
-    public ResourceLocation getUid ()
-    {
-        return uid;
-    }
+	@Override
+	public ResourceLocation getUid() {
+		return uid;
+	}
 
-    @Override
-    public Class<? extends ICraftingRecipe> getRecipeClass ()
-    {
-        return ICraftingRecipe.class;
-    }
+	@Override
+	public Class<? extends ICraftingRecipe> getRecipeClass() {
+		return ICraftingRecipe.class;
+	}
 
-    @Override
-    public String getTitle ()
-    {
-        return I18n.format (ctIcon.getTranslationKey ());
-    }
+	@Override
+	public String getTitle() {
+		return I18n.get(ctIcon.getDescriptionId());
+	}
+	
+	@Override
+	public ITextComponent getTitleAsTextComponent() {
+		return this.titleTextComponent;
+	}
 
-    @Override
-    public IDrawable getIcon ()
-    {
-        return icon;
-    }
+	@Override
+	public IDrawable getIcon() {
+		return icon;
+	}
 
 }
