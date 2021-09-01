@@ -17,65 +17,67 @@
 
 package craftedMods.jeiLotr;
 
-import lotr.common.recipe.LOTRShapedRecipe;
-import lotr.common.recipe.LOTRShapelessRecipe;
+import lotr.common.recipe.*;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.helpers.IModIdHelper;
-import mezz.jei.plugins.vanilla.crafting.CraftingCategoryExtension;
-import mezz.jei.plugins.vanilla.crafting.CraftingRecipeCategory;
+import mezz.jei.api.helpers.*;
+import mezz.jei.plugins.vanilla.crafting.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
-public class FactionCraftingTable extends CraftingRecipeCategory {
+public class FactionCraftingTable extends CraftingRecipeCategory
+{
 
-	private final ResourceLocation uid;
-	private final ItemStack ctIcon;
-	private final IDrawable icon;
-	
-	private ITextComponent titleTextComponent;
+    private final ResourceLocation uid;
+    private final ItemStack ctIcon;
+    private final IDrawable icon;
 
-	public FactionCraftingTable(ResourceLocation uid, ItemStack ctIcon, IGuiHelper guiHelper,
-			IModIdHelper modIdHelper) {
-		super(guiHelper);
+    private ITextComponent titleTextComponent;
 
-		this.uid = uid;
-		this.ctIcon = ctIcon;
-		this.icon = guiHelper.createDrawableIngredient(ctIcon);
+    public FactionCraftingTable (ResourceLocation uid, ItemStack ctIcon, IGuiHelper guiHelper, IModIdHelper modIdHelper)
+    {
+        super (guiHelper);
 
-		this.addCategoryExtension(LOTRShapedRecipe.class, CraftingCategoryExtension::new);
-		this.addCategoryExtension(LOTRShapelessRecipe.class, CraftingCategoryExtension::new);
-		
-		this.titleTextComponent = new TranslationTextComponent(I18n.get(ctIcon.getDescriptionId()));
-	}
+        this.uid = uid;
+        this.ctIcon = ctIcon;
+        this.icon = guiHelper.createDrawableIngredient (ctIcon);
 
-	@Override
-	public ResourceLocation getUid() {
-		return uid;
-	}
+        this.addCategoryExtension (FactionShapedRecipe.class, CraftingCategoryExtension::new);
+        this.addCategoryExtension (FactionShapelessRecipe.class, CraftingCategoryExtension::new);
 
-	@Override
-	public Class<? extends ICraftingRecipe> getRecipeClass() {
-		return ICraftingRecipe.class;
-	}
+        this.titleTextComponent = ctIcon.getDisplayName ();
+    }
 
-	@Override
-	public String getTitle() {
-		return I18n.get(ctIcon.getDescriptionId());
-	}
-	
-	@Override
-	public ITextComponent getTitleAsTextComponent() {
-		return this.titleTextComponent;
-	}
+    @Override
+    public ResourceLocation getUid ()
+    {
+        return uid;
+    }
 
-	@Override
-	public IDrawable getIcon() {
-		return icon;
-	}
+    @Override
+    public Class<? extends ICraftingRecipe> getRecipeClass ()
+    {
+        return ICraftingRecipe.class;
+    }
+
+    @Override
+    public String getTitle ()
+    {
+        return I18n.format (ctIcon.getTranslationKey ());
+    }
+
+    @Override
+    public ITextComponent getTitleAsTextComponent ()
+    {
+        return this.titleTextComponent;
+    }
+
+    @Override
+    public IDrawable getIcon ()
+    {
+        return icon;
+    }
 
 }

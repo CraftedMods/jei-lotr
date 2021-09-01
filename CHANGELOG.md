@@ -1,5 +1,9 @@
 # Changelog of JEI LOTR
 
+## 3.0.0-BETA
+* Updated to LOTR Renewed-4.5
+* Added support for addons
+
 ## 2.0.0-BETA
 * Updated to 1.16.5 and LOTR Renewed-3.0
 

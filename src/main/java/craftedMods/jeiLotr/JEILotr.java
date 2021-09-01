@@ -35,40 +35,50 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod("jeilotr")
-public class JEILotr {
-	private static int ALLOY_FORGE_RECIPE_VERSION = 3;
+public class JEILotr
+{
+    private static int ALLOY_FORGE_RECIPE_VERSION = 3;
 
-	public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger ();
 
-	public JEILotr() {
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    public JEILotr ()
+    {
+        if (FMLEnvironment.dist == Dist.CLIENT)
+        {
+            FMLJavaModLoadingContext.get ().getModEventBus ().addListener (this::setup);
 
-			MinecraftForge.EVENT_BUS.register(this);
-		} else {
-			LOGGER.warn("JEI LOTR was loaded on a server - it doesn't do anyting there and may cause crashes");
-		}
-	}
+            MinecraftForge.EVENT_BUS.register (this);
+        }
+        else
+        {
+            LOGGER.warn ("JEI LOTR was loaded on a server - it doesn't do anything there and may cause crashes");
+        }
+    }
 
-	private void setup(final FMLCommonSetupEvent event) {
-		if (ALLOY_FORGE_RECIPE_VERSION != AbstractAlloyForgeTileEntity.RECIPE_FUNCTIONALITY_VERSION_FOR_JEI) {
-			LOGGER.warn(
-					"The supported alloy forge recipe version differs from the one in the current LOTR Mod version - the alloy forge recipe handlers could show wrong recipes.");
-		}
-	}
+    private void setup (final FMLCommonSetupEvent event)
+    {
+        if (ALLOY_FORGE_RECIPE_VERSION != AbstractAlloyForgeTileEntity.RECIPE_FUNCTIONALITY_VERSION_FOR_JEI)
+        {
+            LOGGER.warn (
+                "The supported alloy forge recipe version differs from the one in the current LOTR Mod version - the alloy forge recipe handlers could show wrong recipes.");
+        }
+    }
 
-	@SubscribeEvent
-	public void login(EntityJoinWorldEvent event) {
-		if (event.getEntity() instanceof ClientPlayerEntity) {
-			VersionChecker.CheckResult result = VersionChecker
-					.getResult(ModList.get().getModContainerById("jeilotr").get().getModInfo());
-			if (result != null && (result.status == VersionChecker.Status.OUTDATED
-					|| result.status == VersionChecker.Status.BETA_OUTDATED)) {
-				((ClientPlayerEntity) event.getEntity()).sendMessage(
-						new StringTextComponent(
-								"\u00A73[JEI LOTR]:\u00A7r A new version (" + result.target.toString() + ") was found"),
-						event.getEntity().getUUID());
-			}
-		}
-	}
+    @SubscribeEvent
+    public void login (EntityJoinWorldEvent event)
+    {
+        if (event.getEntity () instanceof ClientPlayerEntity)
+        {
+            VersionChecker.CheckResult result = VersionChecker
+                .getResult (ModList.get ().getModContainerById ("jeilotr").get ().getModInfo ());
+            if (result != null && (result.status == VersionChecker.Status.OUTDATED
+                || result.status == VersionChecker.Status.BETA_OUTDATED))
+            {
+                ((ClientPlayerEntity) event.getEntity ()).sendMessage (
+                    new StringTextComponent (
+                        "\u00A73[JEI LOTR]:\u00A7r A new version (" + result.target.toString () + ") was found"),
+                    event.getEntity ().getUniqueID ());
+            }
+        }
+    }
 }

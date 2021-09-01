@@ -4,7 +4,7 @@ issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues"
 license="GNU GENERAL PUBLIC LICENSE Version 3" 
 [[mods]] 
 modId="jeilotr" 
-version="2.0.0-BETA" 
+version="3.0.0-BETA" 
 displayName="JEI LOTR" 
 updateJSONURL="https://raw.githubusercontent.com/CraftedMods/jei-lotr/master/versions.json" 
 displayURL="http://github.com/CraftedMods/jei-lotr" 
@@ -34,7 +34,7 @@ A JEI-Plugin for the "The Lord of the Rings" Minecraft Mod.
 [[dependencies.jeilotr]]
     modId="lotr"
     mandatory=true
-    versionRange="[Renewed-3.0,)"
+    versionRange="[Renewed-4.5,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.jeilotr]]

@@ -17,9 +17,7 @@
 
 package craftedMods.jeiLotr;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -38,106 +36,124 @@ import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
-public class Keg implements IRecipeCategory<DrinkBrewingRecipe> {
+public class Keg implements IRecipeCategory<DrinkBrewingRecipe>
+{
 
-	private final ResourceLocation uid;
-	private final ItemStack kegIcon;
-	private final IDrawable icon;
-	private final IDrawable background;
+    private final ResourceLocation uid;
+    private final ItemStack kegIcon;
+    private final IDrawable icon;
+    private final IDrawable background;
 
-	public Keg(ResourceLocation uid, ItemStack forgeIcon, IGuiHelper guiHelper) {
-		this.uid = uid;
-		this.kegIcon = forgeIcon;
-		this.icon = guiHelper.createDrawableIngredient(forgeIcon);
-		this.background = guiHelper.createDrawable(Constants.RECIPE_GUI_VANILLA, 0, 60, 116, 54);
-	}
+    public Keg (ResourceLocation uid, ItemStack forgeIcon, IGuiHelper guiHelper)
+    {
+        this.uid = uid;
+        this.kegIcon = forgeIcon;
+        this.icon = guiHelper.createDrawableIngredient (forgeIcon);
+        this.background = guiHelper.createDrawable (Constants.RECIPE_GUI_VANILLA, 0, 60, 116, 54);
+    }
 
-	@Override
-	public ResourceLocation getUid() {
-		return uid;
-	}
+    @Override
+    public ResourceLocation getUid ()
+    {
+        return uid;
+    }
 
-	@Override
-	public String getTitle() {
-		return I18n.get(kegIcon.getDescriptionId());
-	}
+    @Override
+    public String getTitle ()
+    {
+        return I18n.format (kegIcon.getTranslationKey ());
+    }
 
-	@Override
-	public IDrawable getIcon() {
-		return icon;
-	}
+    @Override
+    public IDrawable getIcon ()
+    {
+        return icon;
+    }
 
-	@Override
-	public IDrawable getBackground() {
-		return background;
-	}
+    @Override
+    public IDrawable getBackground ()
+    {
+        return background;
+    }
 
-	@Override
-	public Class<? extends DrinkBrewingRecipe> getRecipeClass() {
-		return DrinkBrewingRecipe.class;
-	}
+    @Override
+    public Class<? extends DrinkBrewingRecipe> getRecipeClass ()
+    {
+        return DrinkBrewingRecipe.class;
+    }
 
-	@Override
-	public void setIngredients(DrinkBrewingRecipe recipe, IIngredients ingreds) {
-		List<Ingredient> ingredients = new ArrayList<>(recipe.getIngredients());
-		ingredients.addAll(Arrays.asList(Ingredient.of(new ItemStack(Items.WATER_BUCKET)),
-				Ingredient.of(new ItemStack(Items.WATER_BUCKET)), Ingredient.of(new ItemStack(Items.WATER_BUCKET))));
-		ingreds.setInputIngredients(ingredients);
-		ingreds.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
-	}
+    @Override
+    public void setIngredients (DrinkBrewingRecipe recipe, IIngredients ingreds)
+    {
+        List<Ingredient> ingredients = new ArrayList<> (recipe.getIngredients ());
+        ingredients.addAll (Arrays.asList (Ingredient.fromStacks (new ItemStack (Items.WATER_BUCKET)),
+            Ingredient.fromStacks (new ItemStack (Items.WATER_BUCKET)),
+            Ingredient.fromStacks (new ItemStack (Items.WATER_BUCKET))));
+        ingreds.setInputIngredients (ingredients);
+        ingreds.setOutput (VanillaTypes.ITEM, recipe.getRecipeOutput ());
+    }
 
-	@Override
-	public void setRecipe(IRecipeLayout layout, DrinkBrewingRecipe recipe, IIngredients ingreds) {
-		IGuiItemStackGroup guiItemStacks = layout.getItemStacks();
+    @Override
+    public void setRecipe (IRecipeLayout layout, DrinkBrewingRecipe recipe, IIngredients ingreds)
+    {
+        IGuiItemStackGroup guiItemStacks = layout.getItemStacks ();
 
-		for (int i = 0; i < ingreds.getInputs(VanillaTypes.ITEM).size(); i++) {
-			guiItemStacks.init(i, true, 18 * (i % 3), 18 * (int) Math.floor(i / 3));
-			guiItemStacks.set(i, ingreds.getInputs(VanillaTypes.ITEM).get(i));
-		}
+        for (int i = 0; i < ingreds.getInputs (VanillaTypes.ITEM).size (); i++)
+        {
+            guiItemStacks.init (i, true, 18 * (i % 3), 18 * (int) Math.floor (i / 3));
+            guiItemStacks.set (i, ingreds.getInputs (VanillaTypes.ITEM).get (i));
+        }
 
-		ItemStack resultItem = ingreds.getOutputs(VanillaTypes.ITEM).get(0).get(0);
+        ItemStack resultItem = ingreds.getOutputs (VanillaTypes.ITEM).get (0).get (0);
 
-		List<ItemStack> resultItems = new ArrayList<>();
+        List<ItemStack> resultItems = new ArrayList<> ();
 
-		if (resultItem.getItem() instanceof VesselDrinkItem) {
-			guiItemStacks.init(9, false, 94, 18);
+        if (resultItem.getItem () instanceof VesselDrinkItem)
+        {
+            guiItemStacks.init (9, false, 94, 18);
 
-			for (Potency potency : Potency.values()) {
-				ItemStack newStack = resultItem.copy();
-				VesselDrinkItem.setPotency(newStack, potency);
-				resultItems.add(newStack);
-			}
-		} else {
-			resultItems.add(resultItem);
-		}
+            for (Potency potency : Potency.values ())
+            {
+                ItemStack newStack = resultItem.copy ();
+                VesselDrinkItem.setPotency (newStack, potency);
+                resultItems.add (newStack);
+            }
+        }
+        else
+        {
+            resultItems.add (resultItem);
+        }
 
-		guiItemStacks.set(9, resultItems);
-	}
+        guiItemStacks.set (9, resultItems);
+    }
 
-	@Override
-	public void draw(DrinkBrewingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
-		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.font;
+    @Override
+    public void draw (DrinkBrewingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY)
+    {
+        Minecraft minecraft = Minecraft.getInstance ();
+        FontRenderer fontRenderer = minecraft.fontRenderer;
 
-		float experience = recipe.getExperience();
+        float experience = recipe.getExperience ();
 
-		if (experience > 0.0f) {
-			String experienceString = Translator.translateToLocalFormatted("gui.jei.category.smelting.experience",
-					new Object[] { Float.valueOf(experience) });
+        if (experience > 0.0f)
+        {
+            String experienceString = Translator.translateToLocalFormatted ("gui.jei.category.smelting.experience",
+                new Object[]
+                {Float.valueOf (experience)});
 
-			int stringWidth = fontRenderer.width(experienceString);
-			fontRenderer.draw(matrixStack, experienceString, background.getWidth() - stringWidth, 0.0f, -8355712);
-		}
+            int stringWidth = fontRenderer.getStringWidth (experienceString);
+            fontRenderer.drawString (matrixStack, experienceString, background.getWidth () - stringWidth, 0.0f,
+                -8355712);
+        }
 
-		String brewingTimeString = String.format("%.1f min", recipe.getBrewTime() / 1200.0f);
+        String brewingTimeString = String.format ("%.1f min", recipe.getBrewTime () / 1200.0f);
 
-		int stringWidth = fontRenderer.width(brewingTimeString);
-		fontRenderer.draw(matrixStack, brewingTimeString, background.getWidth() - stringWidth, 45.0f, -8355712);
-	}
+        int stringWidth = fontRenderer.getStringWidth (brewingTimeString);
+        fontRenderer.drawString (matrixStack, brewingTimeString, background.getWidth () - stringWidth, 45.0f, -8355712);
+    }
 
 }
