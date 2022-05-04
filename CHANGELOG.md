@@ -1,5 +1,10 @@
 # Changelog of JEI LOTR
 
+## 4.0.0-BETA
+* Updated to LOTR Renewed-5.5
+    * Fixed that transfer handlers were not working anymore
+    * Removed usage of deprecated LOTR code
+
 ## 3.0.0-BETA
 * Updated to LOTR Renewed-4.5
 * Added support for addons

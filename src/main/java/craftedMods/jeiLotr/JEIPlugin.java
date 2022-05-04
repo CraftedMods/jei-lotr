@@ -147,7 +147,6 @@ public class JEIPlugin implements IModPlugin
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void scanFields (String recipeClass, String containerclass, String modid)
     {
         try
@@ -162,23 +161,12 @@ public class JEIPlugin implements IModPlugin
                     types.add (type);
                     types.addAll (type.getMultiTableTypes ());
 
-                    RegistryObject<ContainerType<FactionCraftingContainer>> container = null;
-
-                    try
-                    {
-                        Field containerField = Class.forName (containerclass).getDeclaredField (field.getName ());
-                        container = (RegistryObject<ContainerType<FactionCraftingContainer>>) containerField.get (null);
-                    }
-                    catch (NoSuchFieldException e)
-                    {
-                        JEILotr.LOGGER.warn ("No container field named \"" + field.getName () + "\" was found");
-                    }
-
                     LOTRCraftingTable device = new LOTRCraftingTable (
-                        new ResourceLocation (modid, type.recipeID.split (":")[1]), type.getIcon (), types, container);
+                        new ResourceLocation (modid, type.recipeTypeName.toString ().split (":")[1]),
+                        type.getFactionTableIcon (), types, LOTRContainers.FACTION_CRAFTING);
 
                     devices.add (device);
-                    devicesByBlock.put (Block.getBlockFromItem (type.getIcon ().getItem ()), device);
+                    devicesByBlock.put (Block.getBlockFromItem (type.getFactionTableIcon ().getItem ()), device);
                 }
             }
             JEILotr.LOGGER.debug ("Found " + devices.size () + " faction crafting tables for " + modid);
@@ -416,6 +404,7 @@ public class JEIPlugin implements IModPlugin
     private class LOTRCraftingTable extends LOTRDevice
     {
 
+        @SuppressWarnings("unused")
         private final RegistryObject<ContainerType<FactionCraftingContainer>> container;
 
         public LOTRCraftingTable (ResourceLocation uid, ItemStack icon, Collection<IRecipeType<?>> recipeTypes,
@@ -431,17 +420,14 @@ public class JEIPlugin implements IModPlugin
             return new FactionCraftingTable (uid, icon, guiHelper, modIdHelper);
         }
 
-        @SuppressWarnings("resource")
         @Override
         public void registerTransferHandlers (IRecipeTransferRegistration registration)
         {
             super.registerTransferHandlers (registration);
 
-            registration.addRecipeTransferHandler (
-                container.get ().create (0, Minecraft.getInstance ().player.inventory).getClass (), uid, 1, 9, 10, 36);
-            registration.addRecipeTransferHandler (
-                container.get ().create (0, Minecraft.getInstance ().player.inventory).getClass (),
-                VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+            registration.addRecipeTransferHandler (FactionCraftingContainer.class, uid, 1, 9, 10, 36);
+            registration.addRecipeTransferHandler (FactionCraftingContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1,
+                9, 10, 36);
         }
 
     }
@@ -470,7 +456,7 @@ public class JEIPlugin implements IModPlugin
 
         public void registerTransferHandlers (IRecipeTransferRegistration registration)
         {
-
+            // No implementation by default
         }
 
         @Override
