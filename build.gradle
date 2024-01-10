@@ -96,7 +96,7 @@ minecraft {
 
 repositories {
     maven {
-        url "http://dvs1.progwml6.com/files/maven"
+        url "https://dvs1.progwml6.com/files/maven"
     }
     flatDir {
         dirs 'run/mods'
