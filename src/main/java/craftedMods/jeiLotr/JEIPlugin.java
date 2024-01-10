@@ -108,6 +108,12 @@ public class JEIPlugin implements IModPlugin
                     "lotrfa");
             }
 
+            if (ModList.get ().isLoaded ("lotrextended"))
+            {
+                scanFields ("lotr.common.init.ExtendedRecipes", LOTRContainers.class.getName(),
+                    "lotr");
+            }
+
             LOTRAlloyForge dwarvenForgeDevice = new LOTRAlloyForge (new ResourceLocation ("lotr", "dwarven_forge"),
                 new ItemStack (LOTRBlocks.DWARVEN_FORGE.get ()), Arrays.asList (IRecipeType.SMELTING,
                     LOTRRecipes.DWARVEN_FORGE, LOTRRecipes.ALLOY_FORGE, LOTRRecipes.DWARVEN_FORGE_ALLOY),

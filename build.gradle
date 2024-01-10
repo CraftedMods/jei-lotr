@@ -100,6 +100,7 @@ repositories {
     }
     flatDir {
         dirs 'run/mods'
+        dirs 'libs'
     }
 }
 
@@ -108,13 +109,11 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
-    
-    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${jei_mc_version}:${jei_version}")
     
-    compileOnly fg.deobf(project.dependencies.create("foobar:lotr:${lotr_version}"))
-    runtimeOnly fg.deobf(project.dependencies.create("foobar:lotr:${lotr_version}"))
+    implementation fg.deobf("lotr:lotr-1.16-renewed:5.5")
+    //implementation fg.deobf(project.dependencies.create("foobar:lotr:${lotr_version}"))
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

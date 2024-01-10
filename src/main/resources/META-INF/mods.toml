@@ -4,7 +4,7 @@ issueTrackerURL="http:/github.com/CraftedMods/jei-lotr/issues"
 license="GNU GENERAL PUBLIC LICENSE Version 3" 
 [[mods]] 
 modId="jeilotr" 
-version="3.0.0-BETA" 
+version="4.0.0-BETA" 
 displayName="JEI LOTR" 
 updateJSONURL="https://raw.githubusercontent.com/CraftedMods/jei-lotr/master/versions.json" 
 displayURL="http://github.com/CraftedMods/jei-lotr" 
